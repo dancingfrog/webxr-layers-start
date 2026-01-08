@@ -43,6 +43,10 @@ export class IWSDKBootstrap {
         camera: this.camera
       });
 
+      if (this.inputManager.initialize) {
+        await this.inputManager.initialize();
+      }
+
       // Register core systems
       this.registerCoreSystems();
 
@@ -63,6 +67,7 @@ export class IWSDKBootstrap {
       return true;
     } catch (error) {
       console.error('Failed to initialize IWSDK Bootstrap:', error);
+      this.dispose();
       throw error;
     }
   }
@@ -79,12 +84,12 @@ export class IWSDKBootstrap {
 
   setupInputSystem() {
     // Controller events
-    this.inputManager.on('controllerConnected', (controller) => {
+    this.inputManager.on('controllerAdded', (controller) => {
       console.log(`Controller connected: ${controller.hand}`);
       this.emit('controllerConnected', controller);
     });
 
-    this.inputManager.on('controllerDisconnected', (controller) => {
+    this.inputManager.on('controllerRemoved', (controller) => {
       console.log(`Controller disconnected: ${controller.hand}`);
       this.emit('controllerDisconnected', controller);
     });
