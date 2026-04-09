@@ -1,0 +1,67 @@
+name: Vite Publish
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - real/currents
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: write
+      # https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers#updating-your-github-actions-workflow
+      id-token: write # This is required for requesting the JWT
+      pages: write
+      pull-requests: write
+      repository-projects: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - name: Print GITHUB_TOKEN
+        run: echo ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Print GITHUB_WORKSPACE
+        run: echo ${GITHUB_WORKSPACE}
+
+      - name: Print working directory
+        run: echo $(pwd)
+
+      - name: Setup Node.js
+        uses: ./.github/workflows/node.js
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Build with npm
+        run: npm run build
+
+      - name: List build outputs
+        run: ls -lA dist/
+
+      - name: Upload static files as artifact
+        id: deploy
+        uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
+        with:
+          path: dist/
+
+      - name: Publish to GitHub Pages
+        id: publish
+        uses: actions/deploy-pages@v4
+
