@@ -68,7 +68,7 @@ export default function setupVideoLayerManager (
             const geometry1 = new PlaneGeometry(meshWidth, meshHeight, 1, 1);
             // invert the geometry on the x-axis so that all of the faces point inward
             // geometry1.scale( - 1, 1, 1 );
-            geometry1.translate(videoCenterX + videoReducer, videoCenterY + meshHeight / 2, videoDepthZ);
+            geometry1.translate(videoCenterX + videoReducer, videoCenterY + meshHeight / 2 + videoCenterY - 5, videoDepthZ);
 
             const uvs1 = geometry1.attributes.uv.array;
 
@@ -90,7 +90,7 @@ export default function setupVideoLayerManager (
             // const geometry2 = new SphereGeometry( 500, 60, 40 );
             const geometry2 = new PlaneGeometry(meshWidth, meshHeight, 1, 1);
             // geometry2.scale( - 1, 1, 1 );
-            geometry2.translate(videoCenterX - videoReducer, videoCenterY + meshHeight / 2, videoDepthZ)
+            geometry2.translate(videoCenterX - videoReducer, videoCenterY + meshHeight / 2 + videoCenterY - 5, videoDepthZ)
 
             const uvs2 = geometry2.attributes.uv.array;
 
@@ -143,7 +143,7 @@ export default function setupVideoLayerManager (
                     height: videoHeight * videoReducer,
                     space: refSpace,
                     transform: new XRRigidTransform(
-                        {x: 0, y: (videoHeight * videoReducer) / 2, z: videoDepthZ},
+                        {x: 0, y: (videoHeight * videoReducer) / 2 + videoCenterY, z: videoDepthZ},
                         {},
                         {}
                     )

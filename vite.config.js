@@ -7,7 +7,10 @@ export default {
     define: {
        // "process.env.MapboxAccessToken": JSON.stringify(process.env.MapboxAccessToken)
     },
+    // Vite 6 defaults to scanning **/*.html for deps; public/verge3d-code-examples use
+    // three/nodes (not in three's package exports) and would break dep-scan. Only scan the app.
     optimizeDeps: {
+        entries: ["index.html"],
         esbuildOptions: {
             plugins: [
                 NodeGlobalsPolyfillPlugin({
